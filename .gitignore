@@ -40,5 +40,5 @@ list.yaml
 songs.yaml
 playing.png
 
-# local push script (not for upload)
+# local push script
 *.ps1
