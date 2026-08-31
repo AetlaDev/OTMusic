@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "push": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git-push.ps1"
+    "push": "powershell -NoProfile -ExecutionPolicy Bypass -File git-push.ps1"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

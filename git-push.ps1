@@ -4,7 +4,13 @@
 
 $ErrorActionPreference = "Stop"
 
-$root = Split-Path -Parent $PSScriptRoot
+# locate project root: walk up from this script until package.json is found
+$root = $PSScriptRoot
+while (-not (Test-Path (Join-Path $root 'package.json'))) {
+    $parent = Split-Path -Parent $root
+    if ($parent -eq $root) { break }
+    $root = $parent
+}
 Set-Location $root
 
 Write-Host "[push] Working dir: $root" -ForegroundColor Gray
