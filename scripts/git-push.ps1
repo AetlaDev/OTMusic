@@ -17,7 +17,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # 2. collect changes
-$lines = @(git status --porcelain)
+$lines = @(git status --porcelain -uall)
 if ($lines.Count -eq 0) {
     Write-Host "[push] No local changes. Pulling latest and pushing..."
     git pull --ff-only
@@ -44,10 +44,10 @@ foreach ($line in $lines) {
     $code = $line.Substring(0, 2).Trim()
     $path = $line.Substring(3)
     switch -Regex ($code) {
-        '^(A|$)' { $added++; break }
-        '^D'     { $deleted++; break }
-        '^R'     { $renamed++; break }
-        default  { $modified++ }
+        '^(\?|A)' { $added++; break }
+        '^D'      { $deleted++; break }
+        '^R'      { $renamed++; break }
+        default   { $modified++ }
     }
     if ($keyFiles.Count -lt 6) { $keyFiles.Add($path) }
 }
