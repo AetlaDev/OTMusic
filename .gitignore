@@ -1,0 +1,41 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# environment
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# local tool data / reference marks
+.playwright-cli/
+.codebuddy/
+.mineradio_ref
+.mineradio_src
+
+# third-party reference source
+mineradio-src/
+
+# debug snapshots
+*.err
+after-load.yml
+card.yml
+list.yaml
+songs.yaml
+playing.png
