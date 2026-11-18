@@ -35,7 +35,7 @@ async function fillSongCovers(songs: Song[]): Promise<void> {
       if (pic) song.cover = pic;
     }
   } catch (e) {
-    
+
   }
 }
 

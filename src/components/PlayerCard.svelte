@@ -14,7 +14,7 @@
   export let canNext = false;
   export let onPrev: () => void = () => {};
   export let onNext: () => void = () => {};
-  
+
   export let enter = false;
 
   let cardEl: HTMLDivElement;
@@ -148,9 +148,7 @@
 
   function applyGlass(force = false) {
     if (!cardEl) return;
-    
-    
-    
+
     const now = performance.now();
     if (!force && now - lastGlassApply < 16) return;
     lastGlassApply = now;
@@ -428,7 +426,6 @@
     entranceTweens = e.getChildren();
   }
 
-  
   $: if (enter) playEntrance();
 
   onMount(async () => {
@@ -582,7 +579,7 @@
     height: 48px;
     border-radius: 10px;
     object-fit: cover;
-     
+
     background: linear-gradient(135deg, #232742 0%, #12151f 100%);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
     will-change: transform, opacity, filter;

@@ -1,4 +1,3 @@
- 
 import { config } from '../config';
 
 const B = config.beat;
@@ -15,7 +14,6 @@ const BAND_RANGES = [
 
 const rangeCache = new Map();
 
-
 const DB_FLOOR = -140;
 
 function bandRange(dataLen, sampleRate, fftSize, hz0, hz1) {
@@ -31,7 +29,6 @@ function bandRange(dataLen, sampleRate, fftSize, hz0, hz1) {
   return r;
 }
 
- 
 export function bandRms(data: Float32Array, sampleRate: number, fftSize: number, hz0: number, hz1: number, gain?: number) {
   const { lo, hi } = bandRange(data.length, sampleRate, fftSize, hz0, hz1);
   const g = gain == null ? 1 : gain;
@@ -74,7 +71,6 @@ export function createBeatEngine() {
     s.beatCount = 0; s.primed = 0;
   }
 
-  
   function follow(cur, next, upTau, downTau, dt) {
     const tau = next > cur ? upTau : downTau;
     return cur + (next - cur) * (1 - Math.exp(-dt / Math.max(0.001, tau)));
@@ -83,11 +79,6 @@ export function createBeatEngine() {
   function process(dt, nowT, sampleRate, fftSize, freq, rms) {
     dt = Math.max(0.001, Math.min(0.08, dt || 0.016));
 
-    
-    
-    
-    
-    
     const subRaw = bandRms(freq, sampleRate, fftSize, 38, 74, 1);
     const kickRaw = bandRms(freq, sampleRate, fftSize, 52, 165, 1);
     s.agcRef = follow(s.agcRef, kickRaw * 0.86 + subRaw * 0.42, B.agcTau, B.agcTau, dt);
@@ -112,7 +103,6 @@ export function createBeatEngine() {
     s.snapFast = follow(s.snapFast, snap, 0.012, 0.060, dt);
     s.snapSlow = follow(s.snapSlow, snap, 0.300, 0.520, dt);
 
-    
     const pd = Math.pow(0.990, dt * 60);
     s.subPeak = Math.max(s.subPeak * pd, sub, 0.045);
     s.lowPeak = Math.max(s.lowPeak * Math.pow(0.989, dt * 60), low, 0.060);
@@ -133,7 +123,6 @@ export function createBeatEngine() {
     const vocalRise = Math.max(0, s.vocalFast - s.vocalSlow);
     const snapRise = Math.max(0, s.snapFast - s.snapSlow);
 
-    
     const drumOnset = subRise * 0.88 + subFlux * 0.66 + lowRise * 1.62 + lowFlux * 1.34;
     const musicalOnset =
       bodyRise * 0.34 + bodyFlux * 0.24 +
@@ -148,11 +137,6 @@ export function createBeatEngine() {
     const floor = s.onsetAvg * B.onsetFloor;
     const score = clamp01((onset - floor) / Math.max(0.014, s.onsetPeak - floor));
 
-    
-    
-    
-    
-    
     const drumLevel = low + sub * 0.45;
 
     const subNorm = clamp01(sub / Math.max(0.045, s.subPeak * 0.70));
@@ -161,9 +145,6 @@ export function createBeatEngine() {
     const vocalNorm = clamp01(vocal / Math.max(0.045, s.vocalPeak * 0.72));
     const snapNorm = clamp01(snap / Math.max(0.040, s.snapPeak * 0.72));
 
-    
-    
-    
     if (s.pending) {
       s.peakPending = Math.max(s.peakPending, drumLevel);
       if (--s.pendingFrames <= 0) {
@@ -178,7 +159,7 @@ export function createBeatEngine() {
         out.transient = transient;
         out.drumRef = s.drumRef;
         out.transientRel = rel;
-        
+
         if (out.strength > 0.84 && out.slot !== 0) out.combo = 'accent';
         delete out.slot;
         delete out.lowPresence;
@@ -194,7 +175,6 @@ export function createBeatEngine() {
 
     s.primed++;
 
-    
     if (s.lastHitAt >= 0 && (nowT < s.lastHitAt - 0.15 || nowT - s.lastHitAt > 2.5)) {
       s.lastHitAt = -10;
       s.tempoGap = 0;
@@ -206,7 +186,6 @@ export function createBeatEngine() {
     const phaseWin = expectedGap > 0 ? Math.max(0.055, Math.min(0.105, expectedGap * 0.16)) : 0;
     const tempoDue = expectedGap > 0 && gapFromLast > expectedGap - phaseWin && gapFromLast < expectedGap + phaseWin;
 
-    
     const lowDominance = low / Math.max(0.001, vocal * 0.84 + body * 0.36 + snap * 0.10);
     const lowFluxDominance =
       (lowFlux + subFlux * 0.58) / Math.max(0.001, vocalFlux * 0.72 + bodyFlux * 0.42 + snapFlux * 0.16);
@@ -223,7 +202,7 @@ export function createBeatEngine() {
 
     const strongTransient = drumGate && score > 0.46 && drumOnset > s.onsetAvg * 0.66;
     const kickTransient = drumGate && score > B.scoreGate && lowAttack > Math.max(0.014, s.onsetAvg * 0.34);
-    
+
     const tempoAssist =
       tempoDue &&
       s.tempoConfidence > B.tempoConfidenceGate &&
@@ -295,7 +274,7 @@ export function createBeatEngine() {
 
     if (s.lastHitAt > 0) {
       let gap = nowT - s.lastHitAt;
-      
+
       while (gap > 0.88) gap *= 0.5;
       while (gap < 0.42) gap *= 2;
       if (gap >= 0.42 && gap <= 0.88) {

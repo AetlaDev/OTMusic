@@ -11,7 +11,7 @@
   import { pageLoad } from './lib/loading';
 
   const visualizer: AudioVisualizer = createAudioVisualizer();
-  
+
   const DEFAULT_SONG_ID = 1974630461;
   let root: HTMLElement;
   let audioEl: HTMLAudioElement;
@@ -27,12 +27,9 @@
   let lyricLoadToken = 0;
   let resumeHandler: (() => void) | null = null;
 
-  
   let appReady = false;
   let loaderGone = false;
 
-  
-  
   function setupResumeOnInteraction() {
     if (resumeHandler) return;
     resumeHandler = () => {
@@ -52,10 +49,10 @@
   onMount(async () => {
     visualizer.bind(audioEl);
     const loadStart = performance.now();
-    
+
     const fallback = new Promise<void>((res) => setTimeout(res, 20000));
     Promise.race([pageLoad.ready, fallback]).then(() => {
-      
+
       const elapsed = performance.now() - loadStart;
       const remain = Math.max(0, 1000 - elapsed);
       setTimeout(() => {
@@ -67,7 +64,6 @@
     await loadDefaultSong();
   });
 
-  
   async function loadDefaultSong() {
     pageLoad.start('default-song');
     pageLoad.start('analysis');
@@ -80,9 +76,9 @@
       const url = await getSongUrl(song.id);
       if (url) audioEl.src = url;
     } catch (e) {
-      
+
     } finally {
-      
+
       visualizer.ensureGraph();
       pageLoad.done('analysis');
       pageLoad.done('default-song');
@@ -153,7 +149,7 @@
       visualizer.resetBeat();
       await audioEl.play();
     } catch (e) {
-      
+
       if (e?.name === 'NotAllowedError' && audioEl.src) {
         setupResumeOnInteraction();
         return;

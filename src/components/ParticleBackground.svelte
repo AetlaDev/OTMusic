@@ -14,10 +14,10 @@
   let fxCanvas: HTMLCanvasElement;
   let lyricCanvas: HTMLCanvasElement;
   let engine: ParticleEngine | null = null;
-  
+
   let particlesSettled = false;
   let appliedCover = '';
-  
+
   let warmTaskStarted = false;
 
   function settleParticles() {
@@ -31,15 +31,14 @@
     const audio = document.getElementById('audio') as HTMLAudioElement;
     engine.setTimeSource(() => (audio ? audio.currentTime : 0));
     pageLoad.start('particles');
-    
+
     setTimeout(() => {
       if (!particlesSettled) settleParticles();
     }, 3000);
     if (coverUrl) {
       engine.setCover(coverUrl).then(settleParticles);
     } else {
-      
-      
+
       engine.ready.then(() => {
         const eng = engine;
         if (eng && coverUrl && !particlesSettled) eng.setCover(coverUrl).then(settleParticles);
@@ -52,14 +51,14 @@
     engine.setCover(coverUrl).then(settleParticles);
   }
   $: if (engine) engine.setLyrics(lyrics);
-  
+
   $: if (engine && lyrics.length && !warmTaskStarted) {
     warmTaskStarted = true;
     pageLoad.start('lyric-warm');
     engine.lyricWarmReady.then(() => pageLoad.done('lyric-warm'));
   }
   $: if (engine) engine.setLyricVisible(lyricsVisible);
-  
+
   $: if (enter && engine) engine.startEnter();
 </script>
 

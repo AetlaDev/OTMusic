@@ -1,9 +1,5 @@
- 
-
-
 export const MOBILE_BREAKPOINT = 700;
 
- 
 export function isMobile() {
   if (typeof window === 'undefined') return false;
   return (

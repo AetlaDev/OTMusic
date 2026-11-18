@@ -6,7 +6,7 @@
   import { pageLoad } from '../lib/loading';
 
   export let onSearch: (keyword: string) => void = () => {};
-  
+
   export let enter = false;
 
   let barEl: HTMLFormElement;
@@ -14,13 +14,11 @@
   let liquidGlass: any = null;
   let keyword = '';
   let entranceTweens: gsap.core.Animation[] = [];
-  
-  
+
   let entered = false;
 
-  
   const FULL_W_CAP = 380;
-  
+
   const BTN_ZONE = 60;
 
   let fullW = FULL_W_CAP;
@@ -31,7 +29,6 @@
 
   $: hasText = keyword.trim().length > 0;
 
-  
   const GLASS_PARAMS = {
     ...config.liquidGlass,
     edgeHighlight: 0.05,
@@ -41,7 +38,7 @@
     shadowOpacity: 0.1,
     shadowSpread: 5,
   };
-  
+
   const BTN_GLASS_PARAMS = {
     ...GLASS_PARAMS,
     edgeHighlight: 0.28,
@@ -54,7 +51,6 @@
     if (kw) onSearch(kw);
   }
 
-  
   function computeLayout() {
     fullW = Math.min(FULL_W_CAP, window.innerWidth * 0.92, window.innerWidth - 24);
     compactW = fullW - BTN_ZONE;
@@ -63,8 +59,6 @@
     barH = barEl?.offsetHeight || 54;
   }
 
-  
-  
   function playEntrance() {
     if (!barEl) return;
     entranceTweens.forEach((t) => t.kill());
@@ -82,7 +76,6 @@
     entranceTweens = e.getChildren();
   }
 
-  
   $: if (enter) playEntrance();
 
   onMount(async () => {
@@ -137,7 +130,7 @@
   .search-bar {
     position: fixed;
     z-index: 4;
-     
+
     transform: translateY(calc(-100% - 25px));
     opacity: 0;
     visibility: hidden;
@@ -149,12 +142,11 @@
     background: transparent;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-     
+
     transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: width;
   }
 
-   
   .search-bar.entered {
     transform: none;
     opacity: 1;
@@ -173,7 +165,7 @@
     border: none;
     outline: none;
     color: #fff;
-     
+
     font-size: 16px;
   }
 
@@ -184,14 +176,14 @@
   .search-btn {
     position: fixed;
     z-index: 5;
-     
+
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 16px;
     border: none;
-     
+
     border-radius: 5px;
     background: transparent;
     color: rgba(255, 255, 255, 0.92);
@@ -201,7 +193,7 @@
     white-space: nowrap;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-     
+
     opacity: 0;
     visibility: hidden;
     transform: scale(0.5);

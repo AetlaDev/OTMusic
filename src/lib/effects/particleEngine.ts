@@ -1,6 +1,3 @@
-
-
-
 import { config } from '../config';
 import { buildNoiseLayers, buildSmoothLuminance, sampleNoiseLayers } from './noise';
 import { isMobile } from '../device';
@@ -38,10 +35,9 @@ export function createParticleEngine(canvas, lyricCanvas, fxCanvas, energySource
   let dispFrame = 0;
   let colorFrames = 0;
 
-  
   let particleFlash = 0;
   let lyricShake = 0;
-  
+
   let beatPulseTime = 0;
 
   let bucketIdx = null;
@@ -49,9 +45,9 @@ export function createParticleEngine(canvas, lyricCanvas, fxCanvas, energySource
   let bucketStart = null;
   let bucketCur = null;
   let sortedIdx = null;
-  
+
   const DEFAULT_SCALE = isMobile() ? 1 : CAM.zoomMin;
-  
+
   let isMobileScreen = isMobile();
   const state = {
     dragging: false,
@@ -81,11 +77,11 @@ export function createParticleEngine(canvas, lyricCanvas, fxCanvas, energySource
   const LYRIC_CACHE_MAX = 160;
   const LYRIC_FONT = 900;
   const LYRIC_FONT_SIZE = 160;
-  
+
   const LYRIC_MOBILE_SCALE = 0.65;
   const warmQueue = [];
   let warmPtr = 0;
-  
+
   let warmSettled = false;
   let hadWarmWork = false;
   let warmResolve: () => void = () => {};
@@ -104,7 +100,6 @@ export function createParticleEngine(canvas, lyricCanvas, fxCanvas, energySource
   let loadToken = 0;
   let requestedSrc = null;
 
-  
   let resolveReady!: () => void;
   const ready = new Promise<void>((res) => (resolveReady = res));
 
@@ -514,7 +509,7 @@ export function createParticleEngine(canvas, lyricCanvas, fxCanvas, energySource
 
   function warmLyricStep(budgetMs) {
     if (warmPtr >= warmQueue.length) {
-      
+
       if (hadWarmWork && !warmSettled) {
         warmSettled = true;
         warmResolve();
@@ -673,7 +668,6 @@ void main() {
     }
   }
 
-  
   const LYRIC_TRANS_OFFSET = 0.35;
 
   function computeRowGeom(row, R, worldScale, lineStep, dzCur, dzFalloff, centerY, safeW) {
@@ -684,7 +678,7 @@ void main() {
     if (naturalW > safeW) fit = safeW / naturalW;
 
     const delta = row.delta;
-    
+
     const srcDelta = row.srcDelta != null ? row.srcDelta : delta;
     const lineAbs = Math.min(4.0, Math.abs(srcDelta));
 
@@ -700,7 +694,7 @@ void main() {
     const dz = dzCur + Math.pow(lineAbs, 1.06) * dzFalloff;
 
     const depth = Math.min(1, Math.pow(lineAbs / 2, 1.06));
-    
+
     let alpha = 1 - depth * 0.3;
 
     const FADE_OUT = 3.0;
@@ -768,7 +762,7 @@ void main() {
         transl: false,
         bloom: i === idx || (lyricShake > 0.3 && Math.abs(delta) < 1.6),
       });
-      
+
       if (line.trans) {
         rows.push({
           c: getLyricCanvas(line.trans, LYRIC_FONT_SIZE),
@@ -781,12 +775,10 @@ void main() {
       }
     }
 
-    
     const beatPulse = Math.sin(beatPulseTime * BT.shakeFreq * Math.PI * 2);
     const beatOsc = beatPulse * lyricShake * 0.6;
     const beatPump = lyricShake * BT.lyricScale;
 
-    
     const lyricMobileScale = isMobileScreen ? LYRIC_MOBILE_SCALE : 1;
     const worldScale = (planeW / 3200) * (1 + beatPump) * lyricMobileScale;
     const safeW = W * 0.96;
@@ -1438,15 +1430,14 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     buildParticles();
   }
 
-  
-  const ENTER_SCALE = 1.2; 
-  const ENTER_DURATION = 1.2; 
+  const ENTER_SCALE = 1.2;
+  const ENTER_DURATION = 1.2;
   const enter = { start: -1, done: false };
-  let enterArmed = false; 
-  
+  let enterArmed = false;
+
   function enterEase(time) {
     if (enter.done) return 1;
-    
+
     if (!enterArmed) return 0;
     if (enter.start < 0) enter.start = time;
     const t = Math.min(1, (time - enter.start) / (ENTER_DURATION * 1000));
@@ -1454,7 +1445,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     return 1 - Math.pow(1 - t, 4);
   }
 
-  
   function startEnter() {
     if (enter.done) return;
     enterArmed = true;
@@ -1468,7 +1458,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     ctx.drawImage(bgCanvas, 0, 0);
     ctx.globalAlpha = 1;
 
-    
     if (!enterArmed && !enter.done) {
       warmLyricStep(WARM_BUDGET_MS);
       requestAnimationFrame(draw);
@@ -1485,20 +1474,19 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     const dt = lastTime ? Math.min(0.05, (time - lastTime) / 1000) : 0.016;
     lastTime = time;
 
-    
     particleFlash *= Math.exp(-BT.flashRelease * dt);
     lyricShake *= Math.exp(-BT.shakeRelease * dt);
 
     if (beat && beat.hit) {
       if (window.__beatLog) window.__beatLog.push([time, beat.strength, beat.impact, beat.combo]);
       const drive = beat.strength * 0.45 + beat.impact * 0.75;
-      
+
       const punchTarget = Math.min(V.punchTargetMax, drive * V.punchOvershoot * BT.punchScale);
       punch += (punchTarget - punch) * Math.min(1, dt * 7);
-      
+
       const flashTarget = Math.min(1, drive * 0.85 * BT.particleBright);
       particleFlash += Math.max(0, flashTarget - particleFlash) * Math.min(1, dt * 8);
-      
+
       beatPulseTime = 0;
       const shakeTarget = Math.min(1.2, beat.impact * BT.lyricShake);
       lyricShake += Math.max(0, shakeTarget - lyricShake) * Math.min(1, dt * 10);
@@ -1520,7 +1508,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
     const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
 
-    
     const easeIn = enterEase(time);
     const enterScaleMul = 1 + (ENTER_SCALE - 1) * (1 - easeIn);
     const enterAlpha = easeIn;
@@ -1646,7 +1633,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
   let pinchDist = 0;
   let pinchStartScale = 1;
 
-  
   const TAP_SLOP = 12;
   const TAP_MAX_MS = 300;
   const DBLTAP_GAP_MS = 300;
@@ -1665,7 +1651,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     interactCanvas.classList.add('dragging');
   }
 
-  
   function resetView() {
     state.targetRotY = 0;
     state.targetRotX = 0;
@@ -1720,7 +1705,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     }
     state.dragging = false;
 
-    
     if (e.type !== 'pointerup' || activePointers.size !== 0) return;
     const dx = e.clientX - tapDownX;
     const dy = e.clientY - tapDownY;
@@ -1752,7 +1736,6 @@ void main() { gl_FragColor = texture2D(uTex, vUv); }`;
     state.targetScale = Math.min(CAM.zoomMax, Math.max(CAM.zoomMin, state.targetScale * factor));
   }, { passive: false });
 
-  
   interactCanvas.addEventListener('dblclick', (e) => {
     e.preventDefault();
     resetView();

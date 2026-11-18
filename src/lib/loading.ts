@@ -1,5 +1,3 @@
- 
-
 type TaskName = string;
 
 class LoadingGate {
@@ -10,23 +8,19 @@ class LoadingGate {
     this.resolveReady = res;
   });
 
-   
   get isReady(): boolean {
     return this._ready;
   }
 
-   
   get ready(): Promise<void> {
     return this.readyPromise;
   }
 
-   
   start(name: TaskName): void {
     if (this._ready) return;
     this.pending.add(name);
   }
 
-   
   done(name: TaskName): void {
     if (this._ready) return;
     this.pending.delete(name);
@@ -36,7 +30,6 @@ class LoadingGate {
     }
   }
 
-   
   waitFor(name: TaskName, task: Promise<unknown>): void {
     if (this._ready) return;
     this.pending.add(name);

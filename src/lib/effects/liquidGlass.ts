@@ -1,7 +1,6 @@
 import { config } from '../config';
 import { LiquidGlass } from '@ybouane/liquidglass';
 
- 
 export async function initLiquidGlass(
   card: HTMLElement | HTMLElement[],
   root: HTMLElement,
@@ -12,27 +11,20 @@ export async function initLiquidGlass(
   elements.forEach((el, i) => {
     el.dataset.config = JSON.stringify(configs[i]);
   });
-  
+
   const instance: any = await LiquidGlass.init({
     root,
     glassElements: elements,
   });
 
-  
   const MAX_CAPTURE_DPR = 1.5;
   const origCaptureResize = instance.capture.resize.bind(instance.capture);
   instance.capture.resize = (dpr: number) => {
     origCaptureResize(Math.min(dpr, MAX_CAPTURE_DPR));
   };
-  
-  
+
   instance.capture.dpr = Math.min(window.devicePixelRatio || 1, MAX_CAPTURE_DPR);
 
-  
-  
-  
-  
-  
   const origCaptureMedia = instance._captureMediaDescendants.bind(instance);
   instance._captureMediaDescendants = (
     parent: HTMLElement,
@@ -58,7 +50,6 @@ export async function initLiquidGlass(
     origCaptureMedia(parent, targetCtx, sampleRect, rootRect, dpr);
   };
 
-  
   const MAX_FBO_SETS = 16;
   const origSetActiveSize = instance.renderer._setActiveSize.bind(instance.renderer);
   instance.renderer._setActiveSize = (w: number, h: number) => {

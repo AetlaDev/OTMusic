@@ -49,10 +49,6 @@ export function createAudioVisualizer(): AudioVisualizer {
     analyser.connect(audioCtx.destination);
     freqData = new Uint8Array(analyser.frequencyBinCount);
 
-    
-    
-    
-    
     beatAnalyser = audioCtx.createAnalyser();
     beatAnalyser.fftSize = A.beatFftSize;
     beatAnalyser.smoothingTimeConstant = A.beatSmoothing;
